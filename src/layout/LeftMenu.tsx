@@ -1,10 +1,30 @@
-import { Box, Divider, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material'
+import { 
+  Box, 
+  Divider, 
+  List, 
+  ListItemButton, 
+  ListItemIcon, 
+  ListItemText, 
+  Toolbar, 
+  Typography, 
+  MenuItem, 
+  Select, 
+  FormControl, 
+  InputLabel,
+  Collapse
+} from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import { NavLink, useLocation } from 'react-router-dom'
 import { navItems } from './navigation'
+import type { NavItem } from './navigation'
 import { useAppTheme } from '../app/ThemeProvider'
 import type { ThemeType } from '../app/theme'
-import { Palette as PaletteIcon } from '@mui/icons-material'
+import { 
+  Palette as PaletteIcon, 
+  ExpandLess, 
+  ExpandMore 
+} from '@mui/icons-material'
+import { useState } from 'react'
 
 type LeftMenuProps = {
   onNavigate?: () => void
@@ -48,29 +68,12 @@ export function LeftMenu({ onNavigate }: LeftMenuProps) {
       <Box sx={{ flex: 1, overflow: 'auto' }}>
         <List sx={{ px: 1, py: 1 }}>
           {navItems.map((item) => (
-            <ListItemButton
-              key={item.to}
-              component={NavLink}
-              to={item.to}
-              onClick={onNavigate}
-              selected={location.pathname === item.to}
-              sx={{
-                mx: 0.5,
-                my: 0.25,
-                color: (t) => t.palette.nav.text,
-                '&:hover': { bgcolor: (t) => t.palette.nav.hover },
-                '&.Mui-selected': {
-                  bgcolor: (t) => t.palette.nav.active,
-                  color: (t) => t.palette.nav.activeText,
-                },
-              }}
-            >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText
-                primary={item.label}
-                primaryTypographyProps={{ fontWeight: 700, fontSize: 14, noWrap: true }}
-              />
-            </ListItemButton>
+            <NavMenuItem 
+              key={item.label} 
+              item={item} 
+              location={location} 
+              onNavigate={onNavigate} 
+            />
           ))}
         </List>
       </Box>
@@ -140,3 +143,79 @@ export function LeftMenu({ onNavigate }: LeftMenuProps) {
   )
 }
 
+function NavMenuItem({ item, location, onNavigate }: { item: NavItem; location: any; onNavigate?: () => void }) {
+  const [open, setOpen] = useState(true)
+  const hasChildren = item.children && item.children.length > 0
+
+  const handleClick = () => {
+    if (hasChildren) {
+      setOpen(!open)
+    } else if (onNavigate) {
+      onNavigate()
+    }
+  }
+
+  const isSelected = item.to ? location.pathname === item.to : false
+
+  return (
+    <>
+      <ListItemButton
+        component={item.to ? NavLink : 'div'}
+        {...(item.to ? { to: item.to } : {})}
+        onClick={handleClick}
+        selected={isSelected}
+        sx={{
+          mx: 0.5,
+          my: 0.25,
+          borderRadius: 2,
+          color: (t) => t.palette.nav.text,
+          '&:hover': { bgcolor: (t) => t.palette.nav.hover },
+          '&.Mui-selected': {
+            bgcolor: (t) => t.palette.nav.active,
+            color: (t) => t.palette.nav.activeText,
+          },
+        }}
+      >
+        <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>{item.icon}</ListItemIcon>
+        <ListItemText
+          primary={item.label}
+          primaryTypographyProps={{ fontWeight: 700, fontSize: 14, noWrap: true }}
+        />
+        {hasChildren ? (open ? <ExpandLess /> : <ExpandMore />) : null}
+      </ListItemButton>
+
+      {hasChildren && (
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding sx={{ pl: 2 }}>
+            {item.children!.map((child) => (
+              <ListItemButton
+                key={child.to}
+                component={NavLink}
+                to={child.to}
+                onClick={onNavigate}
+                selected={location.pathname === child.to}
+                sx={{
+                  mx: 0.5,
+                  my: 0.25,
+                  borderRadius: 2,
+                  color: (t) => t.palette.nav.text,
+                  '&:hover': { bgcolor: (t) => t.palette.nav.hover },
+                  '&.Mui-selected': {
+                    bgcolor: (t) => t.palette.nav.active,
+                    color: (t) => t.palette.nav.activeText,
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>{child.icon}</ListItemIcon>
+                <ListItemText
+                  primary={child.label}
+                  primaryTypographyProps={{ fontWeight: 600, fontSize: 13, noWrap: true }}
+                />
+              </ListItemButton>
+            ))}
+          </List>
+        </Collapse>
+      )}
+    </>
+  )
+}

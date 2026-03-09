@@ -1,0 +1,15 @@
+﻿  Determining projects to restore...
+  All projects are up-to-date for restore.
+  SharedKernel -> C:\2026\TransNet\API\src\SharedKernel\bin\Debug\net10.0\SharedKernel.dll
+  Domain -> C:\2026\TransNet\API\src\Domain\bin\Debug\net10.0\Domain.dll
+C:\2026\TransNet\API\src\Application\VehicleCategories\UpdateVehicleCategory\UpdateVehicleCategoryCommandHandler.cs(14,9): error IDE0008: Use explicit type instead of 'var' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0008) [C:\2026\TransNet\API\src\Application\Application.csproj]
+C:\2026\TransNet\API\src\Application\VehicleCategories\DeleteVehicleCategory\DeleteVehicleCategoryCommandHandler.cs(14,9): error IDE0008: Use explicit type instead of 'var' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0008) [C:\2026\TransNet\API\src\Application\Application.csproj]
+
+Build FAILED.
+
+C:\2026\TransNet\API\src\Application\VehicleCategories\UpdateVehicleCategory\UpdateVehicleCategoryCommandHandler.cs(14,9): error IDE0008: Use explicit type instead of 'var' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0008) [C:\2026\TransNet\API\src\Application\Application.csproj]
+C:\2026\TransNet\API\src\Application\VehicleCategories\DeleteVehicleCategory\DeleteVehicleCategoryCommandHandler.cs(14,9): error IDE0008: Use explicit type instead of 'var' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0008) [C:\2026\TransNet\API\src\Application\Application.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:02.45
