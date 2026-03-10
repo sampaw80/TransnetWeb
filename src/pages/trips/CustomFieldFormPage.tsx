@@ -27,10 +27,10 @@ export function CustomFieldFormPage() {
 
     const [formData, setFormData] = useState({
         fieldName: '',
-        dataType: 'Text',
+        fieldType: 'Text',
         isRequired: false,
-        displayOrder: 1,
-        options: '' // JSON-stringified comma array for multiple choice configs
+        defaultValue: '',
+        validationRegex: ''
     });
 
     useEffect(() => {
@@ -41,10 +41,10 @@ export function CustomFieldFormPage() {
                     if (match) {
                         setFormData({
                             fieldName: match.fieldName || '',
-                            dataType: match.dataType || 'Text',
+                            fieldType: match.fieldType || 'Text',
                             isRequired: match.isRequired || false,
-                            displayOrder: match.displayOrder || 1,
-                            options: match.options || ''
+                            defaultValue: match.defaultValue || '',
+                            validationRegex: match.validationRegex || ''
                         });
                     }
                 })
@@ -64,11 +64,19 @@ export function CustomFieldFormPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
+        // Map payload to CreateCustomFieldDefinitionCommand
+        const payload = {
+            fieldName: formData.fieldName,
+            fieldType: formData.fieldType,
+            isRequired: formData.isRequired,
+            defaultValue: formData.defaultValue || null,
+            validationRegex: formData.validationRegex || null
+        };
         try {
             if (isEdit && id) {
-                await customFieldApi.updateCustomField(id, formData);
+                await customFieldApi.updateCustomField(id, payload);
             } else {
-                await customFieldApi.createCustomField(formData);
+                await customFieldApi.createCustomField(payload);
             }
             navigate('/trips/custom-fields');
         } catch (error) {
@@ -122,8 +130,8 @@ export function CustomFieldFormPage() {
                                     select
                                     fullWidth
                                     label="Data Type Validation"
-                                    value={formData.dataType}
-                                    onChange={handleChange('dataType')}
+                                    value={formData.fieldType}
+                                    onChange={handleChange('fieldType')}
                                 >
                                     <MenuItem value="Text">Text (String)</MenuItem>
                                     <MenuItem value="Number">Number (Decimal)</MenuItem>
@@ -144,10 +152,19 @@ export function CustomFieldFormPage() {
                             <Grid size={{ xs: 12, md: 6 }}>
                                 <TextField
                                     fullWidth
-                                    type="number"
-                                    label="Display Layout Order"
-                                    value={formData.displayOrder}
-                                    onChange={handleChange('displayOrder')}
+                                    label="Default Value"
+                                    value={formData.defaultValue}
+                                    onChange={handleChange('defaultValue')}
+                                />
+                            </Grid>
+
+                            <Grid size={{ xs: 12 }}>
+                                <TextField
+                                    fullWidth
+                                    label="Validation Regex (Optional)"
+                                    value={formData.validationRegex}
+                                    onChange={handleChange('validationRegex')}
+                                    placeholder="^d{5}$"
                                 />
                             </Grid>
 

@@ -8,9 +8,7 @@ import {
     Grid,
     Stack,
     Typography,
-    Divider,
-    TextField,
-    InputAdornment
+    TextField
 } from '@mui/material';
 import {
     Save as SaveIcon,
@@ -24,11 +22,10 @@ export function TripVoucherSection() {
     const [voucher, setVoucher] = useState<any>(null);
 
     const [formData, setFormData] = useState({
-        advanceAmount: 0,
-        fuelAllowance: 0,
-        tollExpenses: 0,
-        otherExpenses: 0,
-        remarks: ''
+        voucherNumber: '',
+        voucherDate: '',
+        notes: '',
+        createdByUserId: '00000000-0000-0000-0000-000000000000'
     });
 
     const fetchVoucher = async () => {
@@ -39,22 +36,20 @@ export function TripVoucherSection() {
             if (data) {
                 setVoucher(data);
                 setFormData({
-                    advanceAmount: data.advanceAmount || 0,
-                    fuelAllowance: data.fuelAllowance || 0,
-                    tollExpenses: data.tollExpenses || 0,
-                    otherExpenses: data.otherExpenses || 0,
-                    remarks: data.remarks || ''
+                    voucherNumber: data.voucherNumber || '',
+                    voucherDate: data.voucherDate ? new Date(data.voucherDate).toISOString().slice(0, 16) : '',
+                    notes: data.notes || '',
+                    createdByUserId: data.createdByUserId || '00000000-0000-0000-0000-000000000000'
                 });
             }
         } catch (error) {
             console.error('Failed to load voucher:', error);
             // Demo Data if 404
             setFormData({
-                advanceAmount: 500,
-                fuelAllowance: 1200,
-                tollExpenses: 150,
-                otherExpenses: 0,
-                remarks: 'Standard route voucher'
+                voucherNumber: 'VCH-1001',
+                voucherDate: new Date().toISOString().slice(0, 16),
+                notes: 'Standard route voucher',
+                createdByUserId: '00000000-0000-0000-0000-000000000000'
             });
         } finally {
             setLoading(false);
@@ -67,11 +62,17 @@ export function TripVoucherSection() {
 
     const handleSave = async () => {
         if (!id) return;
+        const payload: any = {
+            voucherNumber: formData.voucherNumber,
+            voucherDate: formData.voucherDate ? new Date(formData.voucherDate).toISOString() : new Date().toISOString(),
+            notes: formData.notes || null,
+            createdByUserId: formData.createdByUserId
+        };
         try {
             if (voucher?.id) {
-                await tripApi.updateVoucher(id, formData);
+                await tripApi.updateVoucher(id, payload);
             } else {
-                await tripApi.createVoucher(id, formData);
+                await tripApi.createVoucher(id, payload);
             }
             alert("Voucher saved successfully!");
             fetchVoucher();
@@ -79,11 +80,6 @@ export function TripVoucherSection() {
             console.error(e);
             alert("Failed to save voucher");
         }
-    };
-
-    const calculateTotal = () => {
-        return Number(formData.advanceAmount) + Number(formData.fuelAllowance) +
-            Number(formData.tollExpenses) + Number(formData.otherExpenses);
     };
 
     return (
@@ -99,44 +95,32 @@ export function TripVoucherSection() {
             <Card variant="outlined">
                 <CardContent>
                     <Grid container spacing={3}>
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                             <TextField
                                 fullWidth
-                                label="Driver Advance"
-                                type="number"
-                                InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
-                                value={formData.advanceAmount}
-                                onChange={(e) => setFormData({ ...formData, advanceAmount: Number(e.target.value) })}
+                                label="Voucher Number"
+                                required
+                                value={formData.voucherNumber}
+                                onChange={(e) => setFormData({ ...formData, voucherNumber: e.target.value })}
                             />
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                             <TextField
                                 fullWidth
-                                label="Fuel Allowance"
-                                type="number"
-                                InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
-                                value={formData.fuelAllowance}
-                                onChange={(e) => setFormData({ ...formData, fuelAllowance: Number(e.target.value) })}
+                                type="datetime-local"
+                                label="Voucher Date"
+                                InputLabelProps={{ shrink: true }}
+                                value={formData.voucherDate}
+                                onChange={(e) => setFormData({ ...formData, voucherDate: e.target.value })}
                             />
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Grid size={{ xs: 12, sm: 12, md: 4 }}>
                             <TextField
                                 fullWidth
-                                label="Toll Expenses"
-                                type="number"
-                                InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
-                                value={formData.tollExpenses}
-                                onChange={(e) => setFormData({ ...formData, tollExpenses: Number(e.target.value) })}
-                            />
-                        </Grid>
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                            <TextField
-                                fullWidth
-                                label="Other Expenses"
-                                type="number"
-                                InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
-                                value={formData.otherExpenses}
-                                onChange={(e) => setFormData({ ...formData, otherExpenses: Number(e.target.value) })}
+                                label="Created By User ID (Guid)"
+                                required
+                                value={formData.createdByUserId}
+                                onChange={(e) => setFormData({ ...formData, createdByUserId: e.target.value })}
                             />
                         </Grid>
 
@@ -146,18 +130,9 @@ export function TripVoucherSection() {
                                 label="Remarks / Notes"
                                 multiline
                                 rows={3}
-                                value={formData.remarks}
-                                onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
+                                value={formData.notes}
+                                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                             />
-                        </Grid>
-
-                        <Grid size={{ xs: 12 }}>
-                            <Divider sx={{ my: 2 }} />
-                            <Stack direction="row" justifyContent="flex-end">
-                                <Typography variant="h5" fontWeight={700}>
-                                    Total Allocated: ${calculateTotal().toFixed(2)}
-                                </Typography>
-                            </Stack>
                         </Grid>
                     </Grid>
                 </CardContent>

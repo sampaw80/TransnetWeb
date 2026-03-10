@@ -11,7 +11,8 @@ import {
     DialogContent,
     DialogActions,
     TextField,
-    Grid
+    Grid,
+    MenuItem
 } from '@mui/material';
 import {
     Add as AddIcon,
@@ -29,8 +30,13 @@ export function TripHaltsSection() {
     // Dialog State
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState({
-        haltStartTime: '',
-        reason: ''
+        haltType: 2,
+        reason: '',
+        latitude: '',
+        longitude: '',
+        locationName: '',
+        startedAt: '',
+        recordedByDriverId: '00000000-0000-0000-0000-000000000000'
     });
 
     const fetchHalts = async () => {
@@ -41,10 +47,10 @@ export function TripHaltsSection() {
             setHalts(data);
         } catch (error) {
             console.error('Failed to load halts:', error);
-            // Demo Data
+            // Demo Data fallback
             setHalts([
-                { id: 'H1', haltStartTime: '2023-11-01T12:00:00Z', haltEndTime: '2023-11-01T13:00:00Z', reason: 'Lunch Break', status: 'Ended' },
-                { id: 'H2', haltStartTime: '2023-11-01T15:30:00Z', haltEndTime: null, reason: 'Traffic Congestion', status: 'Active' }
+                { id: 'H1', startedAt: '2023-11-01T12:00:00Z', haltEndTime: '2023-11-01T13:00:00Z', reason: 'Lunch Break', status: 'Ended', haltType: 5 },
+                { id: 'H2', startedAt: '2023-11-01T15:30:00Z', haltEndTime: null, reason: 'Traffic Congestion', status: 'Active', haltType: 2 }
             ]);
         } finally {
             setLoading(false);
@@ -56,7 +62,15 @@ export function TripHaltsSection() {
     }, [id]);
 
     const handleOpenNew = () => {
-        setFormData({ haltStartTime: new Date().toISOString().slice(0, 16), reason: '' });
+        setFormData({
+            haltType: 2,
+            reason: '',
+            latitude: '',
+            longitude: '',
+            locationName: '',
+            startedAt: new Date().toISOString().slice(0, 16),
+            recordedByDriverId: '00000000-0000-0000-0000-000000000000'
+        });
         setOpen(true);
     };
 
@@ -73,8 +87,17 @@ export function TripHaltsSection() {
 
     const handleCreateHalt = async () => {
         if (!id) return;
+        const payload: any = {
+            haltType: formData.haltType,
+            reason: formData.reason || null,
+            latitude: formData.latitude ? Number(formData.latitude) : null,
+            longitude: formData.longitude ? Number(formData.longitude) : null,
+            locationName: formData.locationName || null,
+            startedAt: formData.startedAt ? new Date(formData.startedAt).toISOString() : new Date().toISOString(),
+            recordedByDriverId: formData.recordedByDriverId
+        };
         try {
-            await tripApi.createHalt(id, formData);
+            await tripApi.createHalt(id, payload);
             setOpen(false);
             fetchHalts();
         } catch (e) {
@@ -85,7 +108,7 @@ export function TripHaltsSection() {
 
     const columns: GridColDef[] = [
         {
-            field: 'haltStartTime',
+            field: 'startedAt',
             headerName: 'Started At',
             width: 170,
             valueFormatter: (value: any) => value ? new Date(value).toLocaleString() : 'N/A'
@@ -153,29 +176,82 @@ export function TripHaltsSection() {
                 }}
             />
 
-            <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+            <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
                 <DialogTitle>Report Trip Delay or Halt</DialogTitle>
                 <DialogContent dividers>
                     <Grid container spacing={3} sx={{ mt: 0.5 }}>
-                        <Grid size={{ xs: 12 }}>
+                        <Grid size={{ xs: 12, sm: 4 }}>
                             <TextField
+                                select
                                 fullWidth
-                                label="Reason for Halt"
-                                multiline
-                                rows={3}
-                                placeholder="e.g. Traffic, Breakdown, Weather..."
-                                value={formData.reason}
-                                onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                            />
+                                label="Halt Type"
+                                value={formData.haltType}
+                                onChange={(e) => setFormData({ ...formData, haltType: Number(e.target.value) })}
+                            >
+                                <MenuItem value={1}>Scheduled</MenuItem>
+                                <MenuItem value={2}>Unscheduled</MenuItem>
+                                <MenuItem value={3}>Emergency</MenuItem>
+                                <MenuItem value={4}>Fuel Stop</MenuItem>
+                                <MenuItem value={5}>Rest</MenuItem>
+                                <MenuItem value={6}>Inspection</MenuItem>
+                            </TextField>
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid size={{ xs: 12, sm: 4 }}>
                             <TextField
                                 fullWidth
                                 type="datetime-local"
                                 label="Halt Started At"
                                 InputLabelProps={{ shrink: true }}
-                                value={formData.haltStartTime}
-                                onChange={(e) => setFormData({ ...formData, haltStartTime: e.target.value })}
+                                value={formData.startedAt}
+                                onChange={(e) => setFormData({ ...formData, startedAt: e.target.value })}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 4 }}>
+                            <TextField
+                                fullWidth
+                                label="Driver ID (Guid)"
+                                required
+                                value={formData.recordedByDriverId}
+                                onChange={(e) => setFormData({ ...formData, recordedByDriverId: e.target.value })}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12 }}>
+                            <TextField
+                                fullWidth
+                                label="Reason for Halt"
+                                multiline
+                                rows={2}
+                                placeholder="e.g. Traffic, Breakdown, Weather..."
+                                value={formData.reason}
+                                onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 4 }}>
+                            <TextField
+                                fullWidth
+                                label="Location Name"
+                                value={formData.locationName}
+                                onChange={(e) => setFormData({ ...formData, locationName: e.target.value })}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 4 }}>
+                            <TextField
+                                fullWidth
+                                label="Latitude"
+                                type="number"
+                                inputProps={{ step: "0.000001" }}
+                                value={formData.latitude}
+                                onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 4 }}>
+                            <TextField
+                                fullWidth
+                                label="Longitude"
+                                type="number"
+                                inputProps={{ step: "0.000001" }}
+                                value={formData.longitude}
+                                onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
                             />
                         </Grid>
                     </Grid>

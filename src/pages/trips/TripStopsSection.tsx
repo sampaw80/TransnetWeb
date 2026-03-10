@@ -11,7 +11,8 @@ import {
     DialogContent,
     DialogActions,
     TextField,
-    Grid
+    Grid,
+    MenuItem
 } from '@mui/material';
 import {
     Add as AddIcon,
@@ -32,9 +33,11 @@ export function TripStopsSection() {
     const [editingStopId, setEditingStopId] = useState<string | null>(null);
     const [formData, setFormData] = useState({
         stopOrder: 1,
-        location: '',
-        arrivalTime: '',
-        departureTime: ''
+        stopType: 1,
+        locationName: '',
+        scheduledArrivalAt: '',
+        actualArrivalAt: '',
+        actualDepartureAt: ''
     });
 
     const fetchStops = async () => {
@@ -45,10 +48,10 @@ export function TripStopsSection() {
             setStops(data);
         } catch (error) {
             console.error('Failed to load stops:', error);
-            // Demo Data
+            // Demo Data fallback if API not ready
             setStops([
-                { id: 'S1', stopOrder: 1, location: 'Warehouse A, NY', arrivalTime: '2023-11-01T10:00:00Z', departureTime: '2023-11-01T11:30:00Z' },
-                { id: 'S2', stopOrder: 2, location: 'Distribution Center, NJ', arrivalTime: '2023-11-01T14:00:00Z', departureTime: null }
+                { id: 'S1', stopOrder: 1, locationName: 'Warehouse A, NY', scheduledArrivalAt: '2023-11-01T10:00:00Z', actualDepartureAt: '2023-11-01T11:30:00Z' },
+                { id: 'S2', stopOrder: 2, locationName: 'Distribution Center, NJ', scheduledArrivalAt: '2023-11-01T14:00:00Z', actualDepartureAt: null }
             ]);
         } finally {
             setLoading(false);
@@ -61,7 +64,7 @@ export function TripStopsSection() {
 
     const handleOpenNew = () => {
         setEditingStopId(null);
-        setFormData({ stopOrder: stops.length + 1, location: '', arrivalTime: '', departureTime: '' });
+        setFormData({ stopOrder: stops.length + 1, stopType: 1, locationName: '', scheduledArrivalAt: '', actualArrivalAt: '', actualDepartureAt: '' });
         setOpen(true);
     };
 
@@ -69,9 +72,11 @@ export function TripStopsSection() {
         setEditingStopId(stop.id);
         setFormData({
             stopOrder: stop.stopOrder,
-            location: stop.location,
-            arrivalTime: stop.arrivalTime ? new Date(stop.arrivalTime).toISOString().slice(0, 16) : '',
-            departureTime: stop.departureTime ? new Date(stop.departureTime).toISOString().slice(0, 16) : ''
+            stopType: stop.stopType || 1,
+            locationName: stop.locationName,
+            scheduledArrivalAt: stop.scheduledArrivalAt ? new Date(stop.scheduledArrivalAt).toISOString().slice(0, 16) : '',
+            actualArrivalAt: stop.actualArrivalAt ? new Date(stop.actualArrivalAt).toISOString().slice(0, 16) : '',
+            actualDepartureAt: stop.actualDepartureAt ? new Date(stop.actualDepartureAt).toISOString().slice(0, 16) : ''
         });
         setOpen(true);
     };
@@ -91,11 +96,20 @@ export function TripStopsSection() {
 
     const handleSave = async () => {
         if (!id) return;
+        const payload: any = {
+            stopOrder: formData.stopOrder,
+            stopType: formData.stopType,
+            locationName: formData.locationName,
+            scheduledArrivalAt: formData.scheduledArrivalAt ? new Date(formData.scheduledArrivalAt).toISOString() : null
+        };
+
         try {
             if (editingStopId) {
-                await tripApi.editStop(id, editingStopId, formData);
+                payload.actualArrivalAt = formData.actualArrivalAt ? new Date(formData.actualArrivalAt).toISOString() : null;
+                payload.actualDepartureAt = formData.actualDepartureAt ? new Date(formData.actualDepartureAt).toISOString() : null;
+                await tripApi.editStop(id, editingStopId, payload);
             } else {
-                await tripApi.addStop(id, formData);
+                await tripApi.addStop(id, payload);
             }
             setOpen(false);
             fetchStops();
@@ -178,31 +192,59 @@ export function TripStopsSection() {
                         <Grid size={{ xs: 12, sm: 8 }}>
                             <TextField
                                 fullWidth
-                                label="Location"
-                                value={formData.location}
-                                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                label="Location Name"
+                                value={formData.locationName}
+                                onChange={(e) => setFormData({ ...formData, locationName: e.target.value })}
                             />
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid size={{ xs: 12, sm: 4 }}>
+                            <TextField
+                                select
+                                fullWidth
+                                label="Stop Type"
+                                value={formData.stopType}
+                                onChange={(e) => setFormData({ ...formData, stopType: Number(e.target.value) })}
+                            >
+                                <MenuItem value={1}>PickUp</MenuItem>
+                                <MenuItem value={2}>DropOff</MenuItem>
+                                <MenuItem value={3}>Waypoint</MenuItem>
+                                <MenuItem value={4}>Depot</MenuItem>
+                            </TextField>
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 4 }}>
                             <TextField
                                 fullWidth
                                 type="datetime-local"
-                                label="Arrival Time"
+                                label="Scheduled Arrival"
                                 InputLabelProps={{ shrink: true }}
-                                value={formData.arrivalTime}
-                                onChange={(e) => setFormData({ ...formData, arrivalTime: e.target.value })}
+                                value={formData.scheduledArrivalAt}
+                                onChange={(e) => setFormData({ ...formData, scheduledArrivalAt: e.target.value })}
                             />
                         </Grid>
-                        <Grid size={{ xs: 12, sm: 6 }}>
-                            <TextField
-                                fullWidth
-                                type="datetime-local"
-                                label="Departure Time"
-                                InputLabelProps={{ shrink: true }}
-                                value={formData.departureTime}
-                                onChange={(e) => setFormData({ ...formData, departureTime: e.target.value })}
-                            />
-                        </Grid>
+                        {editingStopId && (
+                            <>
+                                <Grid size={{ xs: 12, sm: 4 }}>
+                                    <TextField
+                                        fullWidth
+                                        type="datetime-local"
+                                        label="Actual Arrival"
+                                        InputLabelProps={{ shrink: true }}
+                                        value={formData.actualArrivalAt}
+                                        onChange={(e) => setFormData({ ...formData, actualArrivalAt: e.target.value })}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 4 }}>
+                                    <TextField
+                                        fullWidth
+                                        type="datetime-local"
+                                        label="Actual Departure"
+                                        InputLabelProps={{ shrink: true }}
+                                        value={formData.actualDepartureAt}
+                                        onChange={(e) => setFormData({ ...formData, actualDepartureAt: e.target.value })}
+                                    />
+                                </Grid>
+                            </>
+                        )}
                     </Grid>
                 </DialogContent>
                 <DialogActions>

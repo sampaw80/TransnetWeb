@@ -9,8 +9,7 @@ import {
     Stack,
     TextField,
     Typography,
-    CircularProgress,
-    MenuItem
+    CircularProgress
 } from '@mui/material';
 import { Save as SaveIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { tripApi } from '../../features/trips/api/tripApi';
@@ -24,11 +23,12 @@ export function TripFormPage() {
     const [saving, setSaving] = useState(false);
 
     const [formData, setFormData] = useState({
-        driver: '',
-        vehicle: '',
-        status: 'Planned',
-        startDate: '',
-        endDate: ''
+        tripNumber: 'TRP-' + Math.floor(Math.random() * 10000),
+        driverId: '00000000-0000-0000-0000-000000000000',
+        vehicleId: '00000000-0000-0000-0000-000000000000',
+        trailerId: '',
+        scheduledStartAt: '',
+        totalDistanceKm: ''
     });
 
     useEffect(() => {
@@ -36,11 +36,12 @@ export function TripFormPage() {
             tripApi.getTrip(id)
                 .then(data => {
                     setFormData({
-                        driver: data.driver || '',
-                        vehicle: data.vehicle || '',
-                        status: data.status || 'Planned',
-                        startDate: data.startDate ? new Date(data.startDate).toISOString().slice(0, 16) : '',
-                        endDate: data.endDate ? new Date(data.endDate).toISOString().slice(0, 16) : ''
+                        tripNumber: data.tripNumber || '',
+                        driverId: data.driverId || '00000000-0000-0000-0000-000000000000',
+                        vehicleId: data.vehicleId || '00000000-0000-0000-0000-000000000000',
+                        trailerId: data.trailerId || '',
+                        scheduledStartAt: data.scheduledStartAt ? new Date(data.scheduledStartAt).toISOString().slice(0, 16) : '',
+                        totalDistanceKm: data.totalDistanceKm || ''
                     });
                 })
                 .catch(err => console.error('Failed to fetch trip data:', err))
@@ -55,11 +56,22 @@ export function TripFormPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
+
+        // Prepare correct payload
+        const payload: any = {
+            driverId: formData.driverId,
+            vehicleId: formData.vehicleId,
+            trailerId: formData.trailerId ? formData.trailerId : null,
+            scheduledStartAt: formData.scheduledStartAt ? new Date(formData.scheduledStartAt).toISOString() : new Date().toISOString()
+        };
+
         try {
             if (isEdit && id) {
-                await tripApi.updateTrip(id, formData);
+                payload.totalDistanceKm = formData.totalDistanceKm ? Number(formData.totalDistanceKm) : null;
+                await tripApi.updateTrip(id, payload);
             } else {
-                await tripApi.createTrip(formData);
+                payload.tripNumber = formData.tripNumber;
+                await tripApi.createTrip(payload);
             }
             navigate('/trips');
         } catch (error) {
@@ -97,58 +109,66 @@ export function TripFormPage() {
                 <CardContent sx={{ p: 4 }}>
                     <form onSubmit={handleSubmit}>
                         <Grid container spacing={3}>
-                            <Grid size={{ xs: 12, md: 6 }}>
+                            {!isEdit && (
+                                <Grid size={{ xs: 12, md: 4 }}>
+                                    <TextField
+                                        fullWidth
+                                        label="Trip Number"
+                                        required
+                                        value={formData.tripNumber}
+                                        onChange={handleChange('tripNumber')}
+                                    />
+                                </Grid>
+                            )}
+                            <Grid size={{ xs: 12, md: 4 }}>
                                 <TextField
                                     fullWidth
-                                    label="Driver Name"
+                                    label="Driver ID (Guid)"
                                     required
-                                    value={formData.driver}
-                                    onChange={handleChange('driver')}
+                                    value={formData.driverId}
+                                    onChange={handleChange('driverId')}
                                 />
                             </Grid>
-                            <Grid size={{ xs: 12, md: 6 }}>
+                            <Grid size={{ xs: 12, md: 4 }}>
                                 <TextField
                                     fullWidth
-                                    label="Assigned Vehicle Registration"
+                                    label="Vehicle ID (Guid)"
                                     required
-                                    value={formData.vehicle}
-                                    onChange={handleChange('vehicle')}
+                                    value={formData.vehicleId}
+                                    onChange={handleChange('vehicleId')}
                                 />
                             </Grid>
 
                             <Grid size={{ xs: 12, md: 4 }}>
                                 <TextField
-                                    select
                                     fullWidth
-                                    label="Initial Status"
-                                    value={formData.status}
-                                    onChange={handleChange('status')}
-                                >
-                                    <MenuItem value="Planned">Planned</MenuItem>
-                                    <MenuItem value="In Progress">In Progress</MenuItem>
-                                    <MenuItem value="Completed">Completed</MenuItem>
-                                </TextField>
-                            </Grid>
-                            <Grid size={{ xs: 12, md: 4 }}>
-                                <TextField
-                                    fullWidth
-                                    type="datetime-local"
-                                    label="Start Date & Time"
-                                    InputLabelProps={{ shrink: true }}
-                                    value={formData.startDate}
-                                    onChange={handleChange('startDate')}
+                                    label="Trailer ID (Guid Optional)"
+                                    value={formData.trailerId}
+                                    onChange={handleChange('trailerId')}
                                 />
                             </Grid>
                             <Grid size={{ xs: 12, md: 4 }}>
                                 <TextField
                                     fullWidth
                                     type="datetime-local"
-                                    label="End Date & Time"
+                                    label="Scheduled Start At"
+                                    required
                                     InputLabelProps={{ shrink: true }}
-                                    value={formData.endDate}
-                                    onChange={handleChange('endDate')}
+                                    value={formData.scheduledStartAt}
+                                    onChange={handleChange('scheduledStartAt')}
                                 />
                             </Grid>
+                            {isEdit && (
+                                <Grid size={{ xs: 12, md: 4 }}>
+                                    <TextField
+                                        fullWidth
+                                        type="number"
+                                        label="Total Distance (Km)"
+                                        value={formData.totalDistanceKm}
+                                        onChange={handleChange('totalDistanceKm')}
+                                    />
+                                </Grid>
+                            )}
 
                             <Grid size={{ xs: 12 }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
