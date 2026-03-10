@@ -20,32 +20,32 @@ export interface Vehicle {
 
 export const vehicleApi = {
     getVehicles: async () => {
-        const response = await httpClient.get<Vehicle[]>('/api/vehicles');
+        const response = await httpClient.get<Vehicle[]>('/vehicles');
         return response.data;
     },
 
     getVehicleById: async (id: string) => {
-        const response = await httpClient.get<Vehicle>(`/api/vehicles/${id}`);
+        const response = await httpClient.get<Vehicle>(`/vehicles/${id}`);
         return response.data;
     },
 
     registerVehicle: async (data: Partial<Vehicle>) => {
-        const response = await httpClient.post<Vehicle>('/api/vehicles', data);
+        const response = await httpClient.post<Vehicle>('/vehicles', data);
         return response.data;
     },
 
     updateVehicle: async (id: string, data: Partial<Vehicle>) => {
-        const response = await httpClient.put<Vehicle>(`/api/vehicles/${id}`, data);
+        const response = await httpClient.put<Vehicle>(`/vehicles/${id}`, data);
         return response.data;
     },
 
     getVehicleInspections: async (id: string) => {
-        const response = await httpClient.get(`/api/vehicles/${id}/inspections`);
+        const response = await httpClient.get(`/vehicles/${id}/inspections`);
         return response.data;
     },
 
     getVehicleWorkOrders: async (id: string) => {
-        const response = await httpClient.get(`/api/vehicles/${id}/workorders`);
+        const response = await httpClient.get(`/vehicles/${id}/workorders`);
         return response.data;
     }
 };

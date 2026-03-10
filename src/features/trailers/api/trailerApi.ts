@@ -18,27 +18,27 @@ export interface Trailer {
 
 export const trailerApi = {
     getTrailers: async () => {
-        const response = await httpClient.get<Trailer[]>('/api/trailers');
+        const response = await httpClient.get<Trailer[]>('/trailers');
         return response.data;
     },
 
     getTrailerById: async (id: string) => {
-        const response = await httpClient.get<Trailer>(`/api/trailers/${id}`);
+        const response = await httpClient.get<Trailer>(`/trailers/${id}`);
         return response.data;
     },
 
     registerTrailer: async (data: Partial<Trailer>) => {
-        const response = await httpClient.post<Trailer>('/api/trailers', data);
+        const response = await httpClient.post<Trailer>('/trailers', data);
         return response.data;
     },
 
     attachToVehicle: async (trailerId: string, vehicleId: string) => {
-        const response = await httpClient.put(`/api/trailers/${trailerId}/attach/${vehicleId}`);
+        const response = await httpClient.put(`/trailers/${trailerId}/attach/${vehicleId}`);
         return response.data;
     },
 
     getTrailerPerformance: async (id: string) => {
-        const response = await httpClient.get(`/api/trailers/${id}/performance`);
+        const response = await httpClient.get(`/trailers/${id}/performance`);
         return response.data;
     }
 };
