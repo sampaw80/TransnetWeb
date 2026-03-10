@@ -33,6 +33,21 @@ export const navItems: NavItem[] = [
       { label: 'Reports', to: '/vehicles/reports', icon: <AnalyticsOutlinedIcon /> },
     ]
   },
+  {
+    label: 'Trip Management',
+    to: '/trips-management',
+    icon: <AssignmentTurnedInOutlinedIcon />,
+    children: [
+      { label: 'Trips', to: '/trips', icon: <AssignmentTurnedInOutlinedIcon /> },
+      { label: 'Stops', to: '/trips/stops', icon: <AssignmentTurnedInOutlinedIcon /> },
+      { label: 'Halts', to: '/trips/halts', icon: <AssignmentTurnedInOutlinedIcon /> },
+      { label: 'Trip Voucher', to: '/trips/vouchers', icon: <AssignmentTurnedInOutlinedIcon /> },
+      { label: 'POD Uploads', to: '/trips/pods', icon: <AssignmentTurnedInOutlinedIcon /> },
+      { label: 'Import Trips', to: '/trips/import', icon: <AssignmentTurnedInOutlinedIcon /> },
+      { label: 'Import Batches', to: '/trips/import-batches', icon: <AssignmentTurnedInOutlinedIcon /> },
+      { label: 'Custom Fields', to: '/trips/custom-fields', icon: <AssignmentTurnedInOutlinedIcon /> },
+    ]
+  },
   { label: 'Reports', to: '/reports', icon: <AnalyticsOutlinedIcon /> },
   { label: 'Todos', to: '/todos', icon: <AssignmentTurnedInOutlinedIcon /> },
   { label: 'Settings', to: '/settings', icon: <SettingsOutlinedIcon /> },

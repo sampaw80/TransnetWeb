@@ -37,6 +37,21 @@ import {
   CategoryPerformanceReportPage
 } from '../pages/vehiclesHub'
 
+import {
+  TripListPage,
+  TripFormPage,
+  TripDetailsPage,
+  TripStopsSection,
+  TripHaltsSection,
+  TripVoucherSection,
+  PODUploadSection,
+  ImportTripsPage,
+  ImportBatchListPage,
+  ImportBatchDetailsPage,
+  CustomFieldListPage,
+  CustomFieldFormPage
+} from '../pages/tripsHub'
+
 export const router = createBrowserRouter([
   {
     path: '/login',
@@ -100,6 +115,25 @@ export const router = createBrowserRouter([
 
       // Vehicle Reports
       { path: 'vehicles/reports', element: <CategoryPerformanceReportPage /> },
+
+      // Trip Management Redirect
+      { path: 'trips-management', element: <Navigate to="/trips" replace /> },
+
+      // Trips
+      { path: 'trips', element: <TripListPage /> },
+      { path: 'trips/create', element: <TripFormPage /> },
+      { path: 'trips/:id', element: <TripDetailsPage /> },
+      { path: 'trips/:id/edit', element: <TripFormPage /> },
+      { path: 'trips/stops', element: <TripStopsSection /> },
+      { path: 'trips/halts', element: <TripHaltsSection /> },
+      { path: 'trips/vouchers', element: <TripVoucherSection /> },
+      { path: 'trips/pods', element: <PODUploadSection /> },
+      { path: 'trips/import', element: <ImportTripsPage /> },
+      { path: 'trips/import-batches', element: <ImportBatchListPage /> },
+      { path: 'trips/import-batches/:id', element: <ImportBatchDetailsPage /> },
+      { path: 'trips/custom-fields', element: <CustomFieldListPage /> },
+      { path: 'trips/custom-fields/create', element: <CustomFieldFormPage /> },
+      { path: 'trips/custom-fields/:id/edit', element: <CustomFieldFormPage /> },
 
       { path: '*', element: <NotFoundPage /> },
     ],
