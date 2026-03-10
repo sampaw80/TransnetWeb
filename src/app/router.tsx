@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AppLayout } from '../layout/AppLayout'
 import { DashboardPage } from '../pages/DashboardPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
@@ -7,6 +7,35 @@ import { SettingsPage } from '../pages/SettingsPage'
 import { TodosPage } from '../pages/TodosPage'
 import { LoginPage } from '../pages/LoginPage'
 import { RequireAuth } from '../features/auth/RequireAuth'
+
+import {
+  VehicleListPage,
+  VehicleDetailsPage,
+  RegisterVehiclePage,
+  UpdateVehiclePage,
+  VehicleInspectionsPage,
+  VehicleWorkOrdersPage,
+  TrailerListPage,
+  TrailerDetailsPage,
+  RegisterTrailerPage,
+  AttachTrailerPage,
+  TrailerPerformancePage,
+  CategoryListPage,
+  CreateCategoryPage,
+  ChecklistListPage,
+  ChecklistFormPage,
+  SubmitInspectionPage,
+  InspectionDetailsPage,
+  UploadPhotosPage,
+  SignInspectionPage,
+  WorkOrderListPage,
+  CreateWorkOrderPage,
+  UpdateWorkOrderStatusPage,
+  ExportWorkOrdersPage,
+  IdleAssetsPage,
+  AssetLocationsPage,
+  CategoryPerformanceReportPage
+} from '../pages/vehiclesHub'
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +55,52 @@ export const router = createBrowserRouter([
       { path: 'reports', element: <ReportsPage /> },
       { path: 'todos', element: <TodosPage /> },
       { path: 'settings', element: <SettingsPage /> },
+
+      // Vehicle Management Redirect
+      { path: 'vehicles-management', element: <Navigate to="/vehicles" replace /> },
+
+      // Vehicles
+      { path: 'vehicles', element: <VehicleListPage /> },
+      { path: 'vehicles/register', element: <RegisterVehiclePage /> },
+      { path: 'vehicles/:id', element: <VehicleDetailsPage /> },
+      { path: 'vehicles/:id/update', element: <UpdateVehiclePage /> },
+      { path: 'vehicles/:id/inspections', element: <VehicleInspectionsPage /> },
+      { path: 'vehicles/:id/work-orders', element: <VehicleWorkOrdersPage /> },
+
+      // Trailers
+      { path: 'trailers', element: <TrailerListPage /> },
+      { path: 'trailers/register', element: <RegisterTrailerPage /> },
+      { path: 'trailers/:id', element: <TrailerDetailsPage /> },
+      { path: 'trailers/:id/attach', element: <AttachTrailerPage /> },
+      { path: 'trailers/:id/performance', element: <TrailerPerformancePage /> },
+
+      // Categories
+      { path: 'vehicle-categories', element: <CategoryListPage /> },
+      { path: 'vehicle-categories/create', element: <CreateCategoryPage /> },
+
+      // Inspections
+      { path: 'inspections', element: <SubmitInspectionPage /> },
+      { path: 'inspections/checklists', element: <ChecklistListPage /> },
+      { path: 'inspections/checklists/create', element: <ChecklistFormPage /> },
+      { path: 'inspections/checklists/:id/update', element: <ChecklistFormPage /> },
+      { path: 'inspections/:id', element: <InspectionDetailsPage /> },
+      { path: 'inspections/:id/photos', element: <UploadPhotosPage /> },
+      { path: 'inspections/:id/sign', element: <SignInspectionPage /> },
+
+      // Work Orders
+      { path: 'work-orders', element: <WorkOrderListPage /> },
+      { path: 'work-orders/create', element: <CreateWorkOrderPage /> },
+      { path: 'work-orders/:id/status', element: <UpdateWorkOrderStatusPage /> },
+      { path: 'work-orders/export', element: <ExportWorkOrdersPage /> },
+
+      // Assets
+      { path: 'assets', element: <Navigate to="/assets/idle" replace /> },
+      { path: 'assets/idle', element: <IdleAssetsPage /> },
+      { path: 'assets/locations', element: <AssetLocationsPage /> },
+
+      // Vehicle Reports
+      { path: 'vehicles/reports', element: <CategoryPerformanceReportPage /> },
+
       { path: '*', element: <NotFoundPage /> },
     ],
   },
