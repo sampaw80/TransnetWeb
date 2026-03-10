@@ -5,6 +5,7 @@ import { NotFoundPage } from '../pages/NotFoundPage'
 import { ReportsPage } from '../pages/ReportsPage'
 import { SettingsPage } from '../pages/SettingsPage'
 import { TodosPage } from '../pages/TodosPage'
+import { VehicleCategoriesPage } from '../pages/VehicleCategoriesPage'
 import { LoginPage } from '../pages/LoginPage'
 import { RequireAuth } from '../features/auth/RequireAuth'
 
@@ -69,6 +70,7 @@ export const router = createBrowserRouter([
       { path: 'dashboard', element: <DashboardPage /> },
       { path: 'reports', element: <ReportsPage /> },
       { path: 'todos', element: <TodosPage /> },
+      { path: 'vehicle-categories', element: <VehicleCategoriesPage /> },
       { path: 'settings', element: <SettingsPage /> },
 
       // Vehicle Management Redirect

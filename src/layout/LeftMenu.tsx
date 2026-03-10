@@ -2,7 +2,8 @@ import { Box, Divider, List, ListItemButton, ListItemIcon, ListItemText, Toolbar
 import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { useState } from 'react'
 import { alpha } from '@mui/material/styles'
-import { NavLink, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { navItems, type NavItem } from './navigation'
 import { useAppTheme } from '../app/ThemeProvider'
 import type { ThemeType } from '../app/theme'
@@ -35,22 +36,23 @@ export function LeftMenu({ onNavigate }: LeftMenuProps) {
 
   const renderNavItem = (item: NavItem, isNested: boolean = false) => {
     const hasChildren = item.children && item.children.length > 0
-    const isOpen = openMenus[item.to] || false
+    const toPath = item.to || item.label
+    const isOpen = openMenus[toPath] || false
 
     // Check if the current route matches this item or any of its children
-    const isSelected = !hasChildren && location.pathname === item.to
+    const isSelected = !hasChildren && item.to && location.pathname === item.to
 
     // Check if a parent route should be highlighted because a child is active
-    const isParentActive = hasChildren && item.children!.some(child => location.pathname.startsWith(child.to))
+    const isParentActive = hasChildren && item.children!.some((child) => location.pathname.startsWith(child.to))
 
     return (
-      <Box key={item.to}>
+      <Box key={toPath}>
         <ListItemButton
           component={hasChildren ? 'div' : NavLink}
           to={hasChildren ? undefined : item.to}
           onClick={() => {
             if (hasChildren) {
-              handleToggle(item.to)
+              handleToggle(toPath)
             } else if (onNavigate) {
               onNavigate()
             }
@@ -82,7 +84,7 @@ export function LeftMenu({ onNavigate }: LeftMenuProps) {
         {hasChildren && (
           <Collapse in={isOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {item.children!.map((child) => renderNavItem(child, true))}
+              {item.children!.map((child) => renderNavItem(child as unknown as NavItem, true))}
             </List>
           </Collapse>
         )}
@@ -114,8 +116,8 @@ export function LeftMenu({ onNavigate }: LeftMenuProps) {
       <Box sx={{ flex: 1, overflow: 'auto' }}>
         <List sx={{ px: 1, py: 1 }}>
           {navItems.map((item) => renderNavItem(item))}
-        </List>
-      </Box>
+        </List >
+      </Box >
 
       <Box sx={{ p: 2, borderTop: (t) => `1px solid ${t.palette.nav.border}`, bgcolor: (t) => alpha(t.palette.nav.bg, 0.4) }}>
         <FormControl fullWidth size="small">
@@ -178,7 +180,6 @@ export function LeftMenu({ onNavigate }: LeftMenuProps) {
           </Select>
         </FormControl>
       </Box>
-    </Box>
+    </Box >
   )
 }
-

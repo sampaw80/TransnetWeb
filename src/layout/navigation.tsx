@@ -10,11 +10,18 @@ import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined'
 import BuildCircleOutlinedIcon from '@mui/icons-material/BuildCircleOutlined'
 import InventoryOutlinedIcon from '@mui/icons-material/InventoryOutlined'
 
-export type NavItem = {
+export type NavSubItem = {
   label: string
   to: string
   icon: ReactElement
   children?: NavItem[]
+}
+
+export type NavItem = {
+  label: string
+  to?: string
+  icon: ReactElement
+  children?: NavSubItem[]
 }
 
 export const navItems: NavItem[] = [
