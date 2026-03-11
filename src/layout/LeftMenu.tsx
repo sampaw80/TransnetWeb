@@ -27,7 +27,8 @@ export function LeftMenu({ onNavigate }: LeftMenuProps) {
   const location = useLocation()
   const { themeType, setTheme } = useAppTheme()
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
-    '/vehicles-management': true, // Keep it open by default for easier testing during development
+    '/vehicles-management': true,
+    '/driver-management': true,
   })
 
   const handleToggle = (to: string) => {
