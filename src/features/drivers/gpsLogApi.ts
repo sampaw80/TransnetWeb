@@ -20,11 +20,11 @@ export type GpsLog = {
 }
 
 export async function getGpsSessions(driverId: string): Promise<GpsSession[]> {
-  const response = await httpClient.get<GpsSession[]>(`/api/drivers/${driverId}/gps-logs`)
+  const response = await httpClient.get<GpsSession[]>(`/drivers/${driverId}/gps-logs`)
   return response.data
 }
 
 export async function getGpsSession(driverId: string, logId: string): Promise<GpsLog[]> {
-  const response = await httpClient.get<GpsLog[]>(`/api/drivers/${driverId}/gps-logs/${logId}`)
+  const response = await httpClient.get<GpsLog[]>(`/drivers/${driverId}/gps-logs/${logId}`)
   return response.data
 }

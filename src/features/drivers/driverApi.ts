@@ -31,24 +31,24 @@ export type CreateDriverForm = {
 export type UpdateDriverForm = CreateDriverForm
 
 export async function getDrivers(): Promise<DriverResponse[]> {
-  const response = await httpClient.get<DriverResponse[]>('/api/drivers')
+  const response = await httpClient.get<DriverResponse[]>('/drivers')
   return response.data
 }
 
 export async function getDriver(id: string): Promise<DriverResponse> {
-  const response = await httpClient.get<DriverResponse>(`/api/drivers/${id}`)
+  const response = await httpClient.get<DriverResponse>(`/drivers/${id}`)
   return response.data
 }
 
 export async function createDriver(input: CreateDriverForm): Promise<string> {
-  const response = await httpClient.post<string>('/api/drivers', input)
+  const response = await httpClient.post<string>('/drivers', input)
   return response.data
 }
 
 export async function updateDriver(id: string, input: UpdateDriverForm): Promise<void> {
-  await httpClient.put(`/api/drivers/${id}`, input)
+  await httpClient.put(`/drivers/${id}`, input)
 }
 
 export async function resetDriverCredentials(id: string): Promise<void> {
-  await httpClient.post(`/api/drivers/${id}/credentials`, {})
+  await httpClient.post(`/drivers/${id}/credentials`, {})
 }

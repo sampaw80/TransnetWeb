@@ -29,19 +29,19 @@ export type ReviewExpenseForm = {
 }
 
 export async function getExpenses(driverId: string): Promise<ExpenseResponse[]> {
-  const response = await httpClient.get<ExpenseResponse[]>(`/api/drivers/${driverId}/expenses`)
+  const response = await httpClient.get<ExpenseResponse[]>(`/drivers/${driverId}/expenses`)
   return response.data
 }
 
 export async function createExpense(driverId: string, input: CreateExpenseForm): Promise<string> {
-  const response = await httpClient.post<string>(`/api/drivers/${driverId}/expenses`, input)
+  const response = await httpClient.post<string>(`/drivers/${driverId}/expenses`, input)
   return response.data
 }
 
 export async function updateExpense(driverId: string, expId: string, input: CreateExpenseForm): Promise<void> {
-  await httpClient.put(`/api/drivers/${driverId}/expenses/${expId}`, input)
+  await httpClient.put(`/drivers/${driverId}/expenses/${expId}`, input)
 }
 
 export async function reviewExpense(driverId: string, expId: string, input: ReviewExpenseForm): Promise<void> {
-  await httpClient.put(`/api/drivers/${driverId}/expenses/${expId}/review`, input)
+  await httpClient.put(`/drivers/${driverId}/expenses/${expId}/review`, input)
 }

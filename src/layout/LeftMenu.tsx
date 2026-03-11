@@ -26,10 +26,7 @@ const themeOptions: { value: ThemeType; label: string }[] = [
 export function LeftMenu({ onNavigate }: LeftMenuProps) {
   const location = useLocation()
   const { themeType, setTheme } = useAppTheme()
-  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
-    '/vehicles-management': true,
-    '/driver-management': true,
-  })
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({})
 
   const handleToggle = (to: string) => {
     setOpenMenus((prev) => ({ ...prev, [to]: !prev[to] }))

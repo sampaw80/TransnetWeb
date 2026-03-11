@@ -13,14 +13,14 @@ export type AttendanceRecord = {
 }
 
 export async function getAttendance(driverId: string): Promise<AttendanceRecord[]> {
-  const response = await httpClient.get<AttendanceRecord[]>(`/api/drivers/${driverId}/attendance`)
+  const response = await httpClient.get<AttendanceRecord[]>(`/drivers/${driverId}/attendance`)
   return response.data
 }
 
 export async function checkIn(driverId: string, lat?: number, lng?: number): Promise<void> {
-  await httpClient.post(`/api/drivers/${driverId}/attendance/checkin`, { lat, lng })
+  await httpClient.post(`/drivers/${driverId}/attendance/checkin`, { lat, lng })
 }
 
 export async function checkOut(driverId: string, lat?: number, lng?: number): Promise<void> {
-  await httpClient.put(`/api/drivers/${driverId}/attendance/checkout`, { lat, lng })
+  await httpClient.put(`/drivers/${driverId}/attendance/checkout`, { lat, lng })
 }

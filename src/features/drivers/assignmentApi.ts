@@ -15,14 +15,14 @@ export type AssignmentResponse = {
 }
 
 export async function getAssignments(driverId: string): Promise<AssignmentResponse[]> {
-  const response = await httpClient.get<AssignmentResponse[]>(`/api/drivers/${driverId}/assignments`)
+  const response = await httpClient.get<AssignmentResponse[]>(`/drivers/${driverId}/assignments`)
   return response.data
 }
 
 export async function acceptAssignment(driverId: string, assignId: string): Promise<void> {
-  await httpClient.post(`/api/drivers/${driverId}/assignments/${assignId}/accept`, {})
+  await httpClient.post(`/drivers/${driverId}/assignments/${assignId}/accept`, {})
 }
 
 export async function rejectAssignment(driverId: string, assignId: string): Promise<void> {
-  await httpClient.post(`/api/drivers/${driverId}/assignments/${assignId}/reject`, {})
+  await httpClient.post(`/drivers/${driverId}/assignments/${assignId}/reject`, {})
 }

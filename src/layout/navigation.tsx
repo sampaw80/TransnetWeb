@@ -17,6 +17,12 @@ import GpsFixedIcon from '@mui/icons-material/GpsFixed'
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined'
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined'
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined'
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined'
+import PauseCircleOutlinedIcon from '@mui/icons-material/PauseCircleOutlined'
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined'
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined'
+import LibraryBooksOutlinedIcon from '@mui/icons-material/LibraryBooksOutlined'
+import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined'
 
 export type NavSubItem = {
   label: string
@@ -53,18 +59,16 @@ export const navItems: NavItem[] = [
     to: '/trips-management',
     icon: <AssignmentTurnedInOutlinedIcon />,
     children: [
-      { label: 'Trips', to: '/trips', icon: <AssignmentTurnedInOutlinedIcon /> },
-      { label: 'Stops', to: '/trips/stops', icon: <AssignmentTurnedInOutlinedIcon /> },
-      { label: 'Halts', to: '/trips/halts', icon: <AssignmentTurnedInOutlinedIcon /> },
-      { label: 'Trip Voucher', to: '/trips/vouchers', icon: <AssignmentTurnedInOutlinedIcon /> },
-      { label: 'POD Uploads', to: '/trips/pods', icon: <AssignmentTurnedInOutlinedIcon /> },
-      { label: 'Import Trips', to: '/trips/import', icon: <AssignmentTurnedInOutlinedIcon /> },
-      { label: 'Import Batches', to: '/trips/import-batches', icon: <AssignmentTurnedInOutlinedIcon /> },
-      { label: 'Custom Fields', to: '/trips/custom-fields', icon: <AssignmentTurnedInOutlinedIcon /> },
+      { label: 'Trips', to: '/trips', icon: <RouteOutlinedIcon /> },
+      { label: 'Stops', to: '/trips/stops', icon: <LocationOnOutlinedIcon /> },
+      { label: 'Halts', to: '/trips/halts', icon: <PauseCircleOutlinedIcon /> },
+      { label: 'Trip Voucher', to: '/trips/vouchers', icon: <ReceiptLongOutlinedIcon /> },
+      { label: 'POD Uploads', to: '/trips/pods', icon: <CloudUploadOutlinedIcon /> },
+      { label: 'Import Trips', to: '/trips/import', icon: <FileUploadOutlinedIcon /> },
+      { label: 'Import Batches', to: '/trips/import-batches', icon: <LibraryBooksOutlinedIcon /> },
+      { label: 'Custom Fields', to: '/trips/custom-fields', icon: <SettingsSuggestOutlinedIcon /> },
     ]
   },
-  { label: 'Reports', to: '/reports', icon: <AnalyticsOutlinedIcon /> },
-  { label: 'Todos', to: '/todos', icon: <AssignmentTurnedInOutlinedIcon /> },
   {
     label: 'Driver Management',
     to: '/driver-management',
@@ -79,6 +83,8 @@ export const navItems: NavItem[] = [
       { label: 'Notifications', to: '/drivers/notifications', icon: <NotificationsOutlinedIcon /> },
     ],
   },
+  { label: 'Reports', to: '/reports', icon: <AnalyticsOutlinedIcon /> },
+  { label: 'Todos', to: '/todos', icon: <AssignmentTurnedInOutlinedIcon /> },
   { label: 'Settings', to: '/settings', icon: <SettingsOutlinedIcon /> },
 ]
 

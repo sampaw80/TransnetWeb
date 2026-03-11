@@ -11,10 +11,10 @@ export type LocationRecord = {
 }
 
 export async function updateLocation(driverId: string, lat: number, lng: number): Promise<void> {
-  await httpClient.post(`/api/drivers/${driverId}/location`, { latitude: lat, longitude: lng })
+  await httpClient.post(`/drivers/${driverId}/location`, { latitude: lat, longitude: lng })
 }
 
 export async function getLatestLocation(driverId: string): Promise<LocationRecord | null> {
-  const response = await httpClient.get<LocationRecord | null>(`/api/drivers/${driverId}/location/latest`)
+  const response = await httpClient.get<LocationRecord | null>(`/drivers/${driverId}/location/latest`)
   return response.data
 }
