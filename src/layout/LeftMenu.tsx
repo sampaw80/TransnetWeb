@@ -1,30 +1,13 @@
-import { 
-  Box, 
-  Divider, 
-  List, 
-  ListItemButton, 
-  ListItemIcon, 
-  ListItemText, 
-  Toolbar, 
-  Typography, 
-  MenuItem, 
-  Select, 
-  FormControl, 
-  InputLabel,
-  Collapse
-} from '@mui/material'
+import { Box, Divider, List, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography, MenuItem, Select, FormControl, InputLabel, Collapse } from '@mui/material'
+import { ExpandLess, ExpandMore } from '@mui/icons-material'
+import { useState } from 'react'
 import { alpha } from '@mui/material/styles'
-import { NavLink, useLocation } from 'react-router-dom'
-import { navItems } from './navigation'
-import type { NavItem } from './navigation'
+import { useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import { navItems, type NavItem } from './navigation'
 import { useAppTheme } from '../app/ThemeProvider'
 import type { ThemeType } from '../app/theme'
-import { 
-  Palette as PaletteIcon, 
-  ExpandLess, 
-  ExpandMore 
-} from '@mui/icons-material'
-import { useState } from 'react'
+import { Palette as PaletteIcon } from '@mui/icons-material'
 
 type LeftMenuProps = {
   onNavigate?: () => void
@@ -43,6 +26,71 @@ const themeOptions: { value: ThemeType; label: string }[] = [
 export function LeftMenu({ onNavigate }: LeftMenuProps) {
   const location = useLocation()
   const { themeType, setTheme } = useAppTheme()
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
+    '/vehicles-management': true, // Keep it open by default for easier testing during development
+  })
+
+  const handleToggle = (to: string) => {
+    setOpenMenus((prev) => ({ ...prev, [to]: !prev[to] }))
+  }
+
+  const renderNavItem = (item: NavItem, isNested: boolean = false) => {
+    const hasChildren = item.children && item.children.length > 0
+    const toPath = item.to || item.label
+    const isOpen = openMenus[toPath] || false
+
+    // Check if the current route matches this item or any of its children
+    const isSelected = !hasChildren && item.to && location.pathname === item.to
+
+    // Check if a parent route should be highlighted because a child is active
+    const isParentActive = hasChildren && item.children!.some((child) => location.pathname.startsWith(child.to))
+
+    return (
+      <Box key={toPath}>
+        <ListItemButton
+          component={hasChildren ? 'div' : NavLink}
+          to={hasChildren ? undefined : item.to}
+          onClick={() => {
+            if (hasChildren) {
+              handleToggle(toPath)
+            } else if (onNavigate) {
+              onNavigate()
+            }
+          }}
+          selected={isSelected || isParentActive}
+          sx={{
+            mx: 0.5,
+            my: 0.25,
+            pl: isNested ? 4 : 2, // Indent nested items
+            color: (t) => t.palette.nav.text,
+            '&:hover': { bgcolor: (t) => t.palette.nav.hover },
+            '&.Mui-selected': {
+              bgcolor: (t) => t.palette.nav.active,
+              color: (t) => t.palette.nav.activeText,
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: isNested ? 40 : 56 }}>{item.icon}</ListItemIcon>
+          <ListItemText
+            primary={item.label}
+            primaryTypographyProps={{
+              fontWeight: isNested ? 500 : 700,
+              fontSize: 14,
+              noWrap: true
+            }}
+          />
+          {hasChildren && (isOpen ? <ExpandLess /> : <ExpandMore />)}
+        </ListItemButton>
+        {hasChildren && (
+          <Collapse in={isOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {item.children!.map((child) => renderNavItem(child as unknown as NavItem, true))}
+            </List>
+          </Collapse>
+        )}
+      </Box>
+    )
+  }
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -64,25 +112,18 @@ export function LeftMenu({ onNavigate }: LeftMenuProps) {
         </Box>
       </Toolbar>
       <Divider sx={{ borderColor: (t) => t.palette.nav.border }} />
-      
+
       <Box sx={{ flex: 1, overflow: 'auto' }}>
         <List sx={{ px: 1, py: 1 }}>
-          {navItems.map((item) => (
-            <NavMenuItem 
-              key={item.label} 
-              item={item} 
-              location={location} 
-              onNavigate={onNavigate} 
-            />
-          ))}
-        </List>
-      </Box>
+          {navItems.map((item) => renderNavItem(item))}
+        </List >
+      </Box >
 
       <Box sx={{ p: 2, borderTop: (t) => `1px solid ${t.palette.nav.border}`, bgcolor: (t) => alpha(t.palette.nav.bg, 0.4) }}>
         <FormControl fullWidth size="small">
-          <InputLabel 
-            id="theme-select-label" 
-            sx={{ 
+          <InputLabel
+            id="theme-select-label"
+            sx={{
               color: (t) => `${t.palette.nav.subtleText} !important`,
               fontSize: 12,
               '&.Mui-focused': { color: (t) => `${t.palette.primary.main} !important` }
@@ -139,83 +180,6 @@ export function LeftMenu({ onNavigate }: LeftMenuProps) {
           </Select>
         </FormControl>
       </Box>
-    </Box>
-  )
-}
-
-function NavMenuItem({ item, location, onNavigate }: { item: NavItem; location: any; onNavigate?: () => void }) {
-  const [open, setOpen] = useState(true)
-  const hasChildren = item.children && item.children.length > 0
-
-  const handleClick = () => {
-    if (hasChildren) {
-      setOpen(!open)
-    } else if (onNavigate) {
-      onNavigate()
-    }
-  }
-
-  const isSelected = item.to ? location.pathname === item.to : false
-
-  return (
-    <>
-      <ListItemButton
-        component={item.to ? NavLink : 'div'}
-        {...(item.to ? { to: item.to } : {})}
-        onClick={handleClick}
-        selected={isSelected}
-        sx={{
-          mx: 0.5,
-          my: 0.25,
-          borderRadius: 2,
-          color: (t) => t.palette.nav.text,
-          '&:hover': { bgcolor: (t) => t.palette.nav.hover },
-          '&.Mui-selected': {
-            bgcolor: (t) => t.palette.nav.active,
-            color: (t) => t.palette.nav.activeText,
-          },
-        }}
-      >
-        <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>{item.icon}</ListItemIcon>
-        <ListItemText
-          primary={item.label}
-          primaryTypographyProps={{ fontWeight: 700, fontSize: 14, noWrap: true }}
-        />
-        {hasChildren ? (open ? <ExpandLess /> : <ExpandMore />) : null}
-      </ListItemButton>
-
-      {hasChildren && (
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding sx={{ pl: 2 }}>
-            {item.children!.map((child) => (
-              <ListItemButton
-                key={child.to}
-                component={NavLink}
-                to={child.to}
-                onClick={onNavigate}
-                selected={location.pathname === child.to}
-                sx={{
-                  mx: 0.5,
-                  my: 0.25,
-                  borderRadius: 2,
-                  color: (t) => t.palette.nav.text,
-                  '&:hover': { bgcolor: (t) => t.palette.nav.hover },
-                  '&.Mui-selected': {
-                    bgcolor: (t) => t.palette.nav.active,
-                    color: (t) => t.palette.nav.activeText,
-                  },
-                }}
-              >
-                <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>{child.icon}</ListItemIcon>
-                <ListItemText
-                  primary={child.label}
-                  primaryTypographyProps={{ fontWeight: 600, fontSize: 13, noWrap: true }}
-                />
-              </ListItemButton>
-            ))}
-          </List>
-        </Collapse>
-      )}
-    </>
+    </Box >
   )
 }
