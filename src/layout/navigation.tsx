@@ -9,6 +9,12 @@ import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined'
 import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined'
 import BuildCircleOutlinedIcon from '@mui/icons-material/BuildCircleOutlined'
 import InventoryOutlinedIcon from '@mui/icons-material/InventoryOutlined'
+import EvStationOutlinedIcon from '@mui/icons-material/EvStationOutlined'
+import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined'
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
+import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined'
+import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined'
 
 export type NavSubItem = {
   label: string
@@ -53,6 +59,20 @@ export const navItems: NavItem[] = [
       { label: 'Import Trips', to: '/trips/import', icon: <AssignmentTurnedInOutlinedIcon /> },
       { label: 'Import Batches', to: '/trips/import-batches', icon: <AssignmentTurnedInOutlinedIcon /> },
       { label: 'Custom Fields', to: '/trips/custom-fields', icon: <AssignmentTurnedInOutlinedIcon /> },
+    ]
+  },
+  {
+    label: 'Fuel & Expense Management',
+    to: '/fuel-management',
+    icon: <EvStationOutlinedIcon />,
+    children: [
+      { label: 'Woqood Import', to: '/fuel/woqood-import', icon: <EvStationOutlinedIcon /> },
+      { label: 'Card Mappings', to: '/fuel/card-mappings', icon: <CreditCardOutlinedIcon /> },
+      { label: 'Fuel Allocations', to: '/fuel/allocations', icon: <AccountBalanceWalletOutlinedIcon /> },
+      { label: 'Fuel Vehicle Summary', to: '/fuel/vehicle-summary', icon: <AssessmentOutlinedIcon /> },
+      { label: 'Salary Records', to: '/payroll/salary-records', icon: <PaymentsOutlinedIcon /> },
+      { label: 'Commission Items', to: '/payroll/commission-items', icon: <ReceiptLongOutlinedIcon /> },
+      { label: 'Monthly Expense Reports', to: '/reports/monthly-expenses', icon: <AnalyticsOutlinedIcon /> },
     ]
   },
   { label: 'Reports', to: '/reports', icon: <AnalyticsOutlinedIcon /> },

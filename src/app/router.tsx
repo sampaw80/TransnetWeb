@@ -53,6 +53,16 @@ import {
   CustomFieldFormPage
 } from '../pages/tripsHub'
 
+import {
+  WoqoodImportPage,
+  WoqoodCardMappingsPage,
+  FuelAllocationsPage,
+  FuelSummaryPage,
+  SalaryRecordsPage,
+  CommissionItemsPage,
+  ExpenseReportsPage
+} from '../pages/fuelExpenseHub'
+
 export const router = createBrowserRouter([
   {
     path: '/login',
@@ -136,6 +146,16 @@ export const router = createBrowserRouter([
       { path: 'trips/custom-fields', element: <CustomFieldListPage /> },
       { path: 'trips/custom-fields/create', element: <CustomFieldFormPage /> },
       { path: 'trips/custom-fields/:id/edit', element: <CustomFieldFormPage /> },
+
+      // Fuel & Expense Management
+      { path: 'fuel-management', element: <Navigate to="/fuel/woqood-import" replace /> },
+      { path: 'fuel/woqood-import', element: <WoqoodImportPage /> },
+      { path: 'fuel/card-mappings', element: <WoqoodCardMappingsPage /> },
+      { path: 'fuel/allocations', element: <FuelAllocationsPage /> },
+      { path: 'fuel/vehicle-summary', element: <FuelSummaryPage /> },
+      { path: 'payroll/salary-records', element: <SalaryRecordsPage /> },
+      { path: 'payroll/commission-items', element: <CommissionItemsPage /> },
+      { path: 'reports/monthly-expenses', element: <ExpenseReportsPage /> },
 
       { path: '*', element: <NotFoundPage /> },
     ],
