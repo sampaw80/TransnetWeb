@@ -53,6 +53,19 @@ import {
   CustomFieldFormPage
 } from '../pages/tripsHub'
 
+import {
+  DriverListPage,
+  DriverFormPage,
+  DriverProfilePage,
+  AttendancePage,
+  ExpenseListPage,
+  AssignmentListPage,
+  DriverLocationPage,
+  GpsLogsPage,
+  DriverDocumentsPage,
+  DriverNotificationsPage,
+} from '../pages/driversHub'
+
 export const router = createBrowserRouter([
   {
     path: '/login',
@@ -136,6 +149,32 @@ export const router = createBrowserRouter([
       { path: 'trips/custom-fields', element: <CustomFieldListPage /> },
       { path: 'trips/custom-fields/create', element: <CustomFieldFormPage /> },
       { path: 'trips/custom-fields/:id/edit', element: <CustomFieldFormPage /> },
+
+      // Driver Management Redirect
+      { path: 'driver-management', element: <Navigate to="/drivers" replace /> },
+
+      // Drivers CRUD
+      { path: 'drivers', element: <DriverListPage /> },
+      { path: 'drivers/create', element: <DriverFormPage /> },
+      { path: 'drivers/:id', element: <DriverProfilePage /> },
+      { path: 'drivers/:id/edit', element: <DriverFormPage /> },
+
+      // Driver sub-modules (per-driver context)
+      { path: 'drivers/:id/attendance', element: <AttendancePage /> },
+      { path: 'drivers/:id/expenses', element: <ExpenseListPage /> },
+      { path: 'drivers/:id/assignments', element: <AssignmentListPage /> },
+      { path: 'drivers/:id/gps-tracking', element: <DriverLocationPage /> },
+      { path: 'drivers/:id/gps-logs', element: <GpsLogsPage /> },
+      { path: 'drivers/:id/documents', element: <DriverDocumentsPage /> },
+      { path: 'drivers/:id/notifications', element: <DriverNotificationsPage /> },
+
+      // Driver management home pages (for top-level nav items)
+      { path: 'drivers/attendance', element: <AttendancePage /> },
+      { path: 'drivers/expenses', element: <ExpenseListPage /> },
+      { path: 'drivers/assignments', element: <AssignmentListPage /> },
+      { path: 'drivers/gps-tracking', element: <DriverLocationPage /> },
+      { path: 'drivers/documents', element: <DriverDocumentsPage /> },
+      { path: 'drivers/notifications', element: <DriverNotificationsPage /> },
 
       { path: '*', element: <NotFoundPage /> },
     ],

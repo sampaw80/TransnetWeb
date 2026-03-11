@@ -1,0 +1,11 @@
+// Driver Management — barrel re-exports
+export { DriverListPage } from '../features/drivers/DriverListPage'
+export { DriverFormPage } from '../features/drivers/DriverFormPage'
+export { DriverProfilePage } from '../features/drivers/DriverProfilePage'
+export { AttendancePage } from '../features/drivers/AttendancePage'
+export { ExpenseListPage } from '../features/drivers/ExpenseListPage'
+export { AssignmentListPage } from '../features/drivers/AssignmentListPage'
+export { DriverLocationPage } from '../features/drivers/DriverLocationPage'
+export { GpsLogsPage } from '../features/drivers/GpsLogsPage'
+export { DriverDocumentsPage } from '../features/drivers/DriverDocumentsPage'
+export { DriverNotificationsPage } from '../features/drivers/DriverNotificationsPage'

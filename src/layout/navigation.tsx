@@ -9,6 +9,14 @@ import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined'
 import FactCheckOutlinedIcon from '@mui/icons-material/FactCheckOutlined'
 import BuildCircleOutlinedIcon from '@mui/icons-material/BuildCircleOutlined'
 import InventoryOutlinedIcon from '@mui/icons-material/InventoryOutlined'
+import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined'
+import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined'
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined'
+import RouteOutlinedIcon from '@mui/icons-material/RouteOutlined'
+import GpsFixedIcon from '@mui/icons-material/GpsFixed'
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined'
+import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined'
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined'
 
 export type NavSubItem = {
   label: string
@@ -57,6 +65,20 @@ export const navItems: NavItem[] = [
   },
   { label: 'Reports', to: '/reports', icon: <AnalyticsOutlinedIcon /> },
   { label: 'Todos', to: '/todos', icon: <AssignmentTurnedInOutlinedIcon /> },
+  {
+    label: 'Driver Management',
+    to: '/driver-management',
+    icon: <BadgeOutlinedIcon />,
+    children: [
+      { label: 'Drivers', to: '/drivers', icon: <GroupOutlinedIcon /> },
+      { label: 'Attendance', to: '/drivers/attendance', icon: <EventNoteOutlinedIcon /> },
+      { label: 'Expenses', to: '/drivers/expenses', icon: <ReceiptLongOutlinedIcon /> },
+      { label: 'Assignments', to: '/drivers/assignments', icon: <RouteOutlinedIcon /> },
+      { label: 'GPS Tracking', to: '/drivers/gps-tracking', icon: <GpsFixedIcon /> },
+      { label: 'Documents', to: '/drivers/documents', icon: <FolderOutlinedIcon /> },
+      { label: 'Notifications', to: '/drivers/notifications', icon: <NotificationsOutlinedIcon /> },
+    ],
+  },
   { label: 'Settings', to: '/settings', icon: <SettingsOutlinedIcon /> },
 ]
 
